@@ -1,0 +1,97 @@
+/* Ensure the main content area expands to fill the remaining space */
+.main-content {
+  flex-grow: 1; /* This will make it grow and take up the remaining height */
+  min-height: 300px; /* You can adjust the minimum height here */
+  padding: 20px;
+  background-color: #f8f9fa;
+}
+
+
+.movie-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.movie-card-body {
+  flex-grow: 1;
+}
+
+.movie-card-footer {
+  margin-top: auto;
+  text-align: center;
+}
+
+.toggle-btn {
+  margin-bottom: 10px;
+  float: right;
+}
+
+/* Fix the height of the image */
+.card-img-top {
+  height: 350px; /* Set a fixed height for the image */
+  object-fit: cover; /* Ensures the image covers the fixed space without distortion */
+  width: 100%; /* Make the image responsive */
+}
+
+.btn {
+  background-color: #009999;
+  color: aliceblue;
+  border: none;
+  border-radius: 50px;
+  padding: 10px 25px;
+  cursor: pointer;
+  font-weight: bold;
+  text-transform: uppercase;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  margin: 15px 15px 15px 15px;
+}
+
+.btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+  background-color: #66b3ff;
+}
+
+/* Login Container */
+.login-container {
+  max-width: 600px; /* Increased width */
+  margin: 80px auto; /* More space on the top and bottom */
+  background-color: #fff;
+  padding: 60px; /* Increased padding */
+  border-radius: 12px; /* Slightly more rounded corners */
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.2); /* Slightly larger shadow */
+}
+
+.login-container h2 {
+  font-size: 2.5rem; /* Increased font size for the heading */
+  font-weight: 700;
+  margin-bottom: 40px; /* More space below the heading */
+}
+
+/* Form Group */
+.form-group {
+  margin-bottom: 25px;
+}
+
+.form-group input {
+  border-radius: 25px;
+  padding: 20px; /* Increased padding for input fields */
+  font-size: 1.2rem; /* Larger font size for inputs */
+  border: 1px solid #ced4da;
+  box-shadow: none;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: none;
+}
+
+.alert {
+  text-align: center;
+  margin-top: 20px;
+}
