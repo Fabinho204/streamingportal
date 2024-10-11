@@ -30,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
             $row = $result->fetch_assoc();
 
             // Since we're not using password_hash, just a simple comparison
-            if ($password === $row['password']) {
+            if (password_verify($password, $row['password'])) {
                 // Password is correct, log the user in
                 $_SESSION['userlogin'] = true;
                 $_SESSION['user_id'] = $row['id'];
@@ -100,6 +100,7 @@ $conn->close();
             echo '</div>';
         }
         ?>
+        <p>No Account yet? <a href="signup.php">Registrieren</a></p>
     </div>
 
     <!-- Bootstrap JS (Optional) -->

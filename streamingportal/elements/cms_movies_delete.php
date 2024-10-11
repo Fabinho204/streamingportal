@@ -1,32 +1,31 @@
 <?php
 session_start();
-require_once('../models/movies.class.php'); // Include the Movies class
+require_once('../models/movies.class.php');
 
 $movies = new Movies();
 $movie = null; // Initialize movie variable
+$showError = false; // To control whether to show the error message or not
 
-// Check if the user has submitted the form to search for a movie by title
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['searchTitle'])) {
     $movieTitle = strtolower($_POST['searchTitle']);
 
-    // Fetch the movie details using the provided title
+    // Search for the movie
     $movie = $movies->searchMovieByTitle($movieTitle);
 
     if (!$movie) {
-        echo "<script>alert('Movie not found. Please try again.');</script>";
+        // If the movie is not found, show the error
+        $showError = true;
     }
 }
 
-// Handle the delete request
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirmDelete'])) {
-    $movieTitle = strtolower($_POST['movieTitle']); // The movie title from the hidden field
+    $movieTitle = strtolower($_POST['movieTitle']);
 
-    // Delete the movie from the database
+    // Attempt to delete the movie
     $deleteSuccess = $movies->deleteMovieByTitle($movieTitle);
 
     if ($deleteSuccess) {
         echo "<script>alert('Movie successfully deleted.');</script>";
-        // Redirect to the movie list after deletion
         header('Location: ../views/cms_movies_list.php');
         exit();
     } else {
@@ -45,14 +44,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirmDelete'])) {
     <!-- Include SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../script/script.js"></script>
-
-
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
+<?php require_once('../views/header.php'); ?>
     <div class="container mt-4">
         <h2>Delete a Movie</h2>
 
-        <!-- Movie Search Form -->
+        <!-- Search Form -->
         <form method="POST" action="">
             <div class="form-group">
                 <label for="searchTitle">Movie Title</label>
@@ -73,12 +72,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirmDelete'])) {
 
             <!-- Delete confirmation button using SweetAlert -->
             <button class="btn" onclick="confirmDelete('<?= $movie['title'] ?>')">Delete Movie</button>
-            
+
             <!-- Hidden form that will be submitted by SweetAlert -->
             <form id="deleteForm" method="POST" action="">
                 <input type="hidden" name="movieTitle" value="<?= $movie['title'] ?>">
                 <input type="hidden" name="confirmDelete" value="1">
             </form>
+        <?php elseif ($showError): ?>
+            <!-- Show error message if the movie was not found -->
+            <div class="alert alert-danger mt-3">
+                Movie not found. Please try searching again.
+            </div>
+            <a class="btn" href="cms_movies_delete.php">Try Again</a>
         <?php endif; ?>
     </div>
 

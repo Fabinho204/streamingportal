@@ -4,7 +4,6 @@ require_once('../models/movies.class.php'); // Include the Movies class
 
 $movies = new Movies();
 
-// Check if the form has been submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Retrieve the form data
     $title = $_POST['title'];
@@ -19,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($result) {
         echo "<script>alert('Movie added successfully!');</script>";
-        header('Location: ../views/cms_movies_list.php'); // Redirect back to movie list after successful submission
+        header('Location: ../views/cms_movies_list.php');
         exit();
     } else {
         echo "<script>alert('Error adding movie. Please try again.');</script>";
@@ -37,11 +36,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
         integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+        <link rel="stylesheet" href="../css/style.css">
 
     <title>Add Movie</title>
 </head>
 
 <body>
+<?php require_once('../views/header.php'); ?>
     <div class="container mt-4">
         <h2>Add New Movie</h2>
         <form method="POST" action="">
@@ -71,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <div class="form-group">
                 <label for="rating">Rating</label>
-                <input type="number" class="form-control" id="rating" name="rating" step="0.01" min="0" max="10" required>
+                <input type="number" class="form-control" id="rating" name="rating" step="0.1" min="0" max="10" required>
             </div>
             <button type="submit" class="btn">Add Movie</button>
         </form>

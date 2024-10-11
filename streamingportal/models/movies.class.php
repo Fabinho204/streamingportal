@@ -7,7 +7,7 @@ class Movies extends db {
         $sql = "SELECT o.id, o.title, o.posterLink, o.fsk, o.rating, o.description, o.trailer, o.originalTitle, m.releaseYear
                 FROM offers o
                 LEFT JOIN movie m ON o.id = m.offers_id
-                ORDER BY o.id DESC";
+                ORDER BY o.title ASC";
         $result = $this->conn->query($sql);
         
         if ($result->num_rows > 0) {
