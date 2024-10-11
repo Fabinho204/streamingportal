@@ -134,14 +134,19 @@ class Movies extends db {
         return $stmt->execute();
     }
     
-    public function deleteMovieByTitle($title) {
-        $title = $this->conn->real_escape_string($title); // Escape input for safety
-        $sql = "DELETE FROM offers WHERE LOWER(title) = ?";
+    public function deleteMovie($movie_id) {
+        $sql = "DELETE FROM offers WHERE id = ?";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("s", $title);
-        
-        return $stmt->execute();
+        $stmt->bind_param("i", $movie_id); // Bind movie ID as integer
+    
+        if ($stmt->execute()) {
+            return true; // Successfully deleted
+        } else {
+            return false; // Deletion failed
+        }
     }
+    
+    
     
 }
 ?>

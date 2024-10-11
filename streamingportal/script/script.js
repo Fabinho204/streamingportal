@@ -29,10 +29,10 @@ function getSelectedFilters() {
   return filterSummary;
 }
 
-function confirmDelete(movieTitle) {
+function confirmDelete(movieTitle, movieId) {
   Swal.fire({
     title: "Are you sure?",
-    text: "This action cannot be undone!",
+    text: "This action cannot be undone! Deleting the movie: " + movieTitle,
     icon: "warning",
     showCancelButton: true,
     confirmButtonColor: "#009999",
@@ -40,8 +40,8 @@ function confirmDelete(movieTitle) {
     confirmButtonText: "Yes, delete movie!"
   }).then((result) => {
     if (result.isConfirmed) {
-      // If confirmed, submit the hidden form
-      document.getElementById('deleteForm').submit();
+      // If confirmed, submit the hidden form associated with the movie
+      document.getElementById('deleteForm_' + movieId).submit();
     }
   });
 }

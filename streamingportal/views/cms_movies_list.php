@@ -30,6 +30,7 @@ if (!isset($_SESSION['userlogin']) || $_SESSION['userlogin'] !== true) {
     <!-- Font Awesome Link-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <link rel="stylesheet" href="../css/style.css">
+    <script src="../script/script.js"></script>
 
     <title>Movies List</title>
 </head>
@@ -44,7 +45,6 @@ if (!isset($_SESSION['userlogin']) || $_SESSION['userlogin'] !== true) {
             <div class="col-md-12 text-center">
                 <a href="../elements/cms_movies_add.php" class="btn mr-2">Add Movie</a>
                 <a href="../elements/cms_movies_update.php" class="btn mr-2">Update Movie</a>
-                <a href="../elements/cms_movies_delete.php" class="btn">Delete Movie</a>
             </div>
         </div>
 
@@ -63,8 +63,7 @@ if (!isset($_SESSION['userlogin']) || $_SESSION['userlogin'] !== true) {
                                         <p class="card-text">Rating: <?= $movie['rating'] ?></p>
                                     </div>
                                     <div class="card-footer movie-card-footer">
-                                        <button class="btn" data-toggle="modal"
-                                            data-target="#movieModal<?= $movie['id'] ?>">
+                                        <button class="btn" data-toggle="modal" data-target="#movieModal<?= $movie['id'] ?>">
                                             Mehr Anzeigen
                                         </button>
                                     </div>
@@ -128,8 +127,19 @@ if (!isset($_SESSION['userlogin']) || $_SESSION['userlogin'] !== true) {
                                             </p>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn" data-dismiss="modal">Close</button>
-                                            <a href="<?= $movie['trailer'] ?>" class="btn" target="_blank">Watch Trailer</a>
+                                            <!-- Delete Button -->
+                                            <button type="button" class="btn btn-danger"
+                                                onclick="confirmDelete('<?= $movie['title'] ?>', <?= $movie['id'] ?>)">Delete
+                                                Movie</button>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <a href="<?= $movie['trailer'] ?>" class="btn btn-primary" target="_blank">Watch
+                                                Trailer</a>
+
+                                            <!-- Hidden Delete Form -->
+                                            <form id="deleteForm_<?= $movie['id'] ?>" action="../elements/cms_movies_delete.php"
+                                                method="POST" style="display: none;">
+                                                <input type="hidden" name="movie_id" value="<?= $movie['id'] ?>">
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
@@ -150,6 +160,7 @@ if (!isset($_SESSION['userlogin']) || $_SESSION['userlogin'] !== true) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
         crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.2/dist/sweetalert2.all.min.js"></script>
 
 </body>
 
