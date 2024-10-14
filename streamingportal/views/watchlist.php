@@ -1,20 +1,33 @@
 <?php
 session_start();
-require_once('../models/movies.class.php'); // Include Movies class
+require_once('../models/db.php'); // Include the db class
+require_once('../models/watchlist.class.php'); // Include the Watchlist class
+require_once('../models/movies.class.php'); // Include the Movies class
 
-//instance of Movies class
+// Check if the user is logged in
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../views/login.php");
+    exit;
+}
+
+$userId = $_SESSION['user_id'];
+
+// Create an instance of Watchlist and Movies class
+$watchlist = new Watchlist();
 $movies = new Movies();
 
-// Retrieve all movies initially
-$moviesList = $movies->getAllMovies();
+// Get the watchlist for the logged-in user
+$watchlistItems = $watchlist->getWatchlist($userId);
+
 ?>
 
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Watchlist</title>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
@@ -22,9 +35,12 @@ $moviesList = $movies->getAllMovies();
 
     <!-- Font Awesome Link-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="../css/style.css">
 
-    <title>Movie Homepage</title>
+    <!-- Custom Scripts -->
+    <script src="../script/script.js"></script>
 </head>
 
 <body>
@@ -32,33 +48,18 @@ $moviesList = $movies->getAllMovies();
     <?php require_once('header.php'); ?>
 
     <div class="container mt-4">
-        <div class="row main-content">
-            <!-- Filters Section -->
-            <div class="col-md-3">
-                <h4>Filters</h4>
-                <form id="filterForm" method="POST">
-                    <div class="form-group">
-                        <label for="genreSelect">Genre</label>
-                        <select class="form-control" id="genreSelect" name="genre">
-                            <option value="All">All</option>
-                            <option value="Action">Action</option>
-                            <option value="Science Fiction">Science Fiction</option>
-                            <option value="Drama">Drama</option>
-                            <option value="Thriller">Thriller</option>
-                            <option value="Fantasy">Fantasy</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="btn" id="applyFilters">Apply Filters</button>
-                </form>
+        <div class="row mb-4">
+            <div class="col-md-12 text-center">
+                <h4>Your Watchlist</h4>
             </div>
+        </div>
 
-            <!-- Movie List Section -->
-            <div class="col-md-9">
-                <h4>Movies</h4>
+        <div class="row main-content">
+            <div class="col-md-12">
                 <div class="row" id="movies-container">
-                    <?php if (!empty($moviesList)): ?>
-                        <!-- Loop through movies and display -->
-                        <?php foreach ($moviesList as $movie): ?>
+                    <?php if (!empty($watchlistItems)): ?>
+                        <!-- Loop through watchlist items and display them -->
+                        <?php foreach ($watchlistItems as $movie): ?>
                             <div class="col-md-4">
                                 <div class="card movie-card mb-4">
                                     <img src="<?= $movie['posterLink'] ?>" class="card-img-top" alt="<?= $movie['title'] ?>">
@@ -67,9 +68,8 @@ $moviesList = $movies->getAllMovies();
                                         <p class="card-text">Rating: <?= $movie['rating'] ?></p>
                                     </div>
                                     <div class="card-footer movie-card-footer">
-                                        <button class="btn" data-toggle="modal"
-                                            data-target="#movieModal<?= $movie['id'] ?>">
-                                            Mehr Anzeigen
+                                        <button class="btn" data-toggle="modal" data-target="#movieModal<?= $movie['id'] ?>">
+                                            View Details
                                         </button>
                                     </div>
                                 </div>
@@ -132,16 +132,18 @@ $moviesList = $movies->getAllMovies();
                                             </p>
                                         </div>
                                         <div class="modal-footer">
+                                            <!-- Delete Button -->
+                                            <button type="button" class="btn"
+                                                onclick="removeFromWatchlist(<?= $movie['id'] ?>)">Remove from
+                                                Watchlist</button>
                                             <button type="button" class="btn" data-dismiss="modal">Close</button>
-                                            <a href="<?= $movie['trailer'] ?>" class="btn" target="_blank">Watch
-                                                Trailer</a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         <?php endforeach; ?>
                     <?php else: ?>
-                        <p>No movies found.</p>
+                        <p>Your watchlist is empty.</p>
                     <?php endif; ?>
                 </div>
             </div>
@@ -155,33 +157,8 @@ $moviesList = $movies->getAllMovies();
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
         crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.2/dist/sweetalert2.all.min.js"></script>
 
-    <script>
-        $(document).ready(function() {
-            // When filter form is submitted
-            $('#filterForm').on('submit', function(event) {
-                event.preventDefault();
-
-                var selectedGenre = $('#genreSelect').val();
-
-                // Send AJAX request to search_filter
-                $.ajax({
-                    url: "../models/search_filters.php",
-                    type: 'POST',
-                    data: {
-                        genre: selectedGenre
-                    },
-                    success: function(response) {
-                        // Update list dynamically with filtered
-                        $('#movies-container').html(response);
-                    },
-                    error: function(xhr, status, error) {
-                        console.log("Error: " + error);
-                    }
-                });
-            });
-        });
-    </script>
 </body>
 
 </html>

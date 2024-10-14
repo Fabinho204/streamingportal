@@ -18,6 +18,9 @@
                 echo '<li class="nav-item">
                 <a class="nav-link" href="../views/cms_movies_list.php">Editing Dashboard</a>
                 </li>';
+                echo '<li class="nav-item">
+                <a class="nav-link" href="../views/watchlist.php">Watchlist</a>
+                </li>';
                 }
             ?>
         </ul>

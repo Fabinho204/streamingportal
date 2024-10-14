@@ -1,37 +1,30 @@
 <?php
 session_start();
 
-require_once('../models/db.php'); // Assumed your DB connection is here
+require_once('../models/db.php');
 require_once('../views/header.php');
 
-$db = new db(); // Instantiate the db class
-$conn = $db->getConnection(); // Get the connection object
+$db = new db();
+$conn = $db->getConnection();
 
-$errors = []; // Initialize error array
+$errors = [];
 
-// Check if the user submitted the login form
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
-    // Retrieve form data
     $username = trim($_POST["name"]);
     $password = $_POST["password"];
 
-    // Check if any input field is empty
     if (empty($username) || empty($password)) {
         $errors[] = "Username and Password are required.";
     } else {
-        // Check if the user exists in the database
         $stmt = $conn->prepare("SELECT id, firstname, lastname, email, password, role FROM users WHERE email = ?");
         $stmt->bind_param("s", $username); // Bind the email (used as username)
         $stmt->execute();
         $result = $stmt->get_result();
 
         if ($result->num_rows == 1) {
-            // User exists, verify password
             $row = $result->fetch_assoc();
 
-            // Since we're not using password_hash, just a simple comparison
             if (password_verify($password, $row['password'])) {
-                // Password is correct, log the user in
                 $_SESSION['userlogin'] = true;
                 $_SESSION['user_id'] = $row['id'];
                 $_SESSION['user_firstname'] = $row['firstname'];
@@ -51,7 +44,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
     }
 }
 
-// Close the database connection
 $conn->close();
 ?>
 
@@ -91,7 +83,6 @@ $conn->close();
         </form>
 
         <?php
-        // Display errors from $errors[] array
         if (!empty($errors)) {
             echo '<div class="alert alert-danger">';
             foreach ($errors as $error) {

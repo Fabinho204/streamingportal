@@ -1,30 +1,24 @@
 <?php
 session_start();
-require_once('../models/db.php'); // Assumed your DB connection is here
+require_once('../models/db.php');
 require_once('../views/header.php');
 
-// Initialize error array and success message
 $errors = [];
 $success_message = '';
 
-// Check if the user submitted the form
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['signup'])) {
-    // Retrieve form data
     $firstname = trim($_POST["firstname"]);
     $lastname = trim($_POST["lastname"]);
     $email = trim($_POST["email"]);
     $password = $_POST["password"];
     $role = "user"; // Default role for users
 
-    // Check if any input field is empty
     if (empty($firstname) || empty($lastname) || empty($email) || empty($password)) {
         $errors[] = "All fields are required.";
     } else {
-        // Create a new database connection instance
         $db = new db();
         $conn = $db->getConnection();
 
-        // Check if the email already exists in the users table
         $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
@@ -41,9 +35,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['signup'])) {
             $insertStmt->bind_param("sssss", $firstname, $lastname, $email, $hashed_password, $role);
 
             if ($insertStmt->execute()) {
-                // Registration successful
                 $success_message = "Registration successful. You can now log in.";
-                header("Location: login.php"); // Redirect to login page after successful registration
+                header("Location: login.php"); // Redirect to login
                 exit();
             } else {
                 $errors[] = "Registration failed. Please try again.";
@@ -100,7 +93,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['signup'])) {
         </form>
 
         <?php
-        // Display errors from $errors[] array
         if (!empty($errors)) {
             echo '<div class="alert alert-danger">';
             foreach ($errors as $error) {

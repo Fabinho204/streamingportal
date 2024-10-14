@@ -48,7 +48,7 @@ if (!isset($_SESSION['userlogin']) || $_SESSION['userlogin'] !== true) {
             </div>
         </div>
 
-        <div class="row">
+        <div class="row main-content">
             <div class="col-md-12">
                 <h4>Movies</h4>
                 <div class="row" id="movies-container">
@@ -131,6 +131,9 @@ if (!isset($_SESSION['userlogin']) || $_SESSION['userlogin'] !== true) {
                                             <button type="button" class="btn btn-danger"
                                                 onclick="confirmDelete('<?= $movie['title'] ?>', <?= $movie['id'] ?>)">Delete
                                                 Movie</button>
+                                            <!-- Add to Watchlist Button -->
+                                            <button type="button" class="btn" id="watchlist-btn-<?= $movie['id'] ?>"
+                                                onclick="addToWatchlist(<?= $movie['id'] ?>)">Add to Watchlist</button>
                                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                             <a href="<?= $movie['trailer'] ?>" class="btn btn-primary" target="_blank">Watch
                                                 Trailer</a>

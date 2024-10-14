@@ -1,9 +1,8 @@
 /* Ensure the main content area expands to fill the remaining space */
 .main-content {
   flex-grow: 1; /* This will make it grow and take up the remaining height */
-  min-height: 300px; /* You can adjust the minimum height here */
+  min-height: calc(100vh - 150px); /* You can adjust the minimum height here */
   padding: 20px;
-  background-color: #f8f9fa;
 }
 
 
