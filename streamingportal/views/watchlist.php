@@ -132,10 +132,6 @@ $watchlistItems = $watchlist->getWatchlist($userId);
                                             </p>
                                         </div>
                                         <div class="modal-footer">
-                                            <!-- Delete Button -->
-                                            <button type="button" class="btn"
-                                                onclick="removeFromWatchlist(<?= $movie['id'] ?>)">Remove from
-                                                Watchlist</button>
                                             <button type="button" class="btn" data-dismiss="modal">Close</button>
                                         </div>
                                     </div>

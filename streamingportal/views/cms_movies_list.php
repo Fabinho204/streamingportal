@@ -1,9 +1,13 @@
 <?php
 session_start();
 require_once('../models/movies.class.php'); // Include the Movies class
+require_once('../models/watchlist.class.php'); // Include the Watchlist class
 
 // Create an instance of the Movies class
 $movies = new Movies();
+
+// Create an instance of the Watchlist class
+$watchlist = new Watchlist();
 
 // Retrieve all movies
 $moviesList = $movies->getAllMovies();
@@ -131,9 +135,20 @@ if (!isset($_SESSION['userlogin']) || $_SESSION['userlogin'] !== true) {
                                             <button type="button" class="btn btn-danger"
                                                 onclick="confirmDelete('<?= $movie['title'] ?>', <?= $movie['id'] ?>)">Delete
                                                 Movie</button>
-                                            <!-- Add to Watchlist Button -->
+                                            <!-- Add/Remove to Watchlist Button -->
                                             <button type="button" class="btn" id="watchlist-btn-<?= $movie['id'] ?>"
-                                                onclick="addToWatchlist(<?= $movie['id'] ?>)">Add to Watchlist</button>
+                                                onclick="toggleWatchlist(<?= $movie['id'] ?>)">
+                                                <?php
+                                                // Check if the movie is already in the user's watchlist
+                                                if ($watchlist->isInWatchlist($_SESSION['user_id'], $movie['id'])) {
+                                                    echo "Remove Watchlist";
+                                                } else {
+                                                    echo "Add Watchlist";
+                                                }
+                                                ?>
+                                            </button>
+
+
                                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                             <a href="<?= $movie['trailer'] ?>" class="btn btn-primary" target="_blank">Watch
                                                 Trailer</a>

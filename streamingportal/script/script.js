@@ -46,80 +46,57 @@ function confirmDelete(movieTitle, movieId) {
   });
 }
 
-function addToWatchlist(offersId) {
-  $.ajax({
-      url: '../elements/add_to_watchlist.php', // Path to your backend PHP script
-      method: 'POST',
-      data: { offers_id: offersId }, // Send the offer (movie/series) ID
-      success: function(response) {
-          const data = JSON.parse(response);
-          if (data.success) {
-              Swal.fire({
-                  title: 'Added!',
-                  text: 'The movie has been added to your watchlist.',
-                  icon: 'success',
-                  confirmButtonColor: "#009999",
-                  confirmButtonText: 'OK'
-              });
-          } else {
-              Swal.fire({
-                  title: 'Already Added!',
-                  text: 'This movie is already in your watchlist.',
-                  icon: 'info',
-                  confirmButtonColor: "#009999",
-                  confirmButtonText: 'OK'
-              });
-          }
-      },
-      error: function() {
-          Swal.fire({
-              title: 'Error!',
-              text: 'An error occurred while adding the movie to your watchlist. Please try again.',
-              icon: 'error',
-              confirmButtonColor: "#009999",
-              confirmButtonText: 'OK'
-          });
-      }
-  });
+function toggleWatchlist(movieId) {
+    var button = document.getElementById("watchlist-btn-" + movieId);
+    
+    var action = button.innerHTML.trim() === "Add Watchlist" ? 'add' : 'remove';
+    var ajaxUrl = action === 'add' ? '../elements/add_to_watchlist.php' : '../elements/remove_from_watchlist.php';
+    
+    $.ajax({
+        url: ajaxUrl,
+        method: 'POST',
+        data: { offers_id: movieId },
+        success: function(response) {
+            const data = JSON.parse(response);
+            if (data.success) {
+                // Only update button text after the request was successful
+                if (action === 'add') {
+                    button.innerHTML = "Remove Watchlist";
+                    Swal.fire({
+                        title: 'Added!',
+                        text: 'The movie has been added to your watchlist.',
+                        icon: 'success',
+                        confirmButtonColor: "#009999",
+                        confirmButtonText: 'OK'
+                    });
+                } else {
+                    button.innerHTML = "Add Watchlist";
+                    Swal.fire({
+                        title: 'Removed!',
+                        text: 'The movie has been removed from your watchlist.',
+                        icon: 'success',
+                        confirmButtonColor: "#009999",
+                        confirmButtonText: 'OK'
+                    });
+                }
+            } else {
+                Swal.fire({
+                    title: 'Error!',
+                    text: data.message,
+                    icon: 'error',
+                    confirmButtonColor: "#009999",
+                    confirmButtonText: 'OK'
+                });
+            }
+        },
+        error: function() {
+            Swal.fire({
+                title: 'Error!',
+                text: 'An error occurred. Please try again.',
+                icon: 'error',
+                confirmButtonColor: "#009999",
+                confirmButtonText: 'OK'
+            });
+        }
+    });
 }
-
-
-function removeFromWatchlist(offersId) {
-  $.ajax({
-      url: '../elements/remove_from_watchlist.php', // Path to your backend PHP script
-      method: 'POST',
-      data: { offers_id: offersId }, // Send the offer (movie/series) ID
-      success: function(response) {
-          const data = JSON.parse(response);
-          if (data.success) {
-              Swal.fire({
-                  title: 'Removed!',
-                  text: 'The movie has been removed from your watchlist.',
-                  icon: 'success',
-                  confirmButtonColor: "#009999",
-                  confirmButtonText: 'OK'
-              }).then(() => {
-                  location.reload(); // Reload the page after confirmation
-              });
-          } else {
-              Swal.fire({
-                  title: 'Error!',
-                  text: 'Failed to remove the movie from your watchlist.',
-                  icon: 'error',
-                  confirmButtonColor: "#009999",
-                  confirmButtonText: 'OK'
-              });
-          }
-      },
-      error: function() {
-          Swal.fire({
-              title: 'Error!',
-              text: 'An error occurred. Please try again later.',
-              icon: 'error',
-              confirmButtonColor: "#009999",
-              confirmButtonText: 'OK'
-          });
-      }
-  });
-}
-
